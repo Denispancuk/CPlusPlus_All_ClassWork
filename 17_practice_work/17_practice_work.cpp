@@ -11,7 +11,7 @@ struct Book
     int year;
     float price;
 };
-void ShowBook(Book* arr, int size) {
+void ShowBook(Book* arr) {
         cout << "ID: " << arr->id << endl;
         cout << "Name book: " << arr->name << endl;
         cout << "Autor book: " << arr->autor << endl;
@@ -36,36 +36,36 @@ void ShowBooks(Book* arr, int size) {
 void SearchBookByAutor(Book* arr , int size, char autor[]) {
     for (int i = 0; i < size; i++)
     {
-        if (strcmp(arr[i].autor, autor))
+        if (strcmp(arr[i].autor, autor) == 0)
         {
-            ShowBook(&arr[i], size);
+            ShowBook(&arr[i]);
         }
     }
 }
 void SearchBookByName(Book* arr , int size, char name[]) {
     for (int i = 0; i < size; i++)
     {
-        if (strcmp(arr[i].name, name))
+        if (strcmp(arr[i].name, name) == 0)
         {
-            ShowBook(&arr[i], size);
+            ShowBook(&arr[i]);
         }
     }
 }
 void SearchBookByHouse(Book* arr , int size, char publishing_house[]) {
     for (int i = 0; i < size; i++)
     {
-        if (strcmp(arr[i].publishing_house, publishing_house))
+        if (strcmp(arr[i].publishing_house, publishing_house) == 0)
         {
-            ShowBook(&arr[i], size);
+            ShowBook(&arr[i]);
         }
     }
 }
 void SearchBookByGenre(Book* arr , int size, char genre[]) {
     for (int i = 0; i < size; i++)
     {
-        if (strcmp(arr[i].genre, genre))
+        if (strcmp(arr[i].genre, genre) == 0)
         {
-            ShowBook(&arr[i], size);
+            ShowBook(&arr[i]);
         }
     }
 }
@@ -82,14 +82,53 @@ void ChangePrice(Book* arr, int size) {
     {
         if (arr[i].id == id)
         {
-            arr[i].price == price;
+            arr[i].price = price;
         }
     }
+}
+void InitBook(Book* arr) {
+    cout << "ID: "; cin >> arr->id;
+    cin.ignore();
+    cout << "Name book: "; cin.getline(arr->name,50);
+    cout << "Autor book: "; cin.getline(arr->autor,50);
+    cout << "Publishing house book: "; cin.getline(arr->publishing_house,100);
+    cout << "Genre book: "; cin.getline(arr->genre,50);
+    cout << "Year book: "; cin >> arr->year;
+    cout << "Price book: "; cin >> arr->price;
+}
+Book* AddNewBook(Book* arr, int& size) {
+    Book* temp =  new Book[size + 1];
+    for (int i = 0; i < size; i++)
+    {
+        temp[i] = arr[i];
+    }
+    InitBook(&temp[size]);
+    
+    delete[] arr;
+    arr = temp;
+    size++;
+    return temp;
+
+}
+Book* DeleteBookById(Book* arr, int& size, int id) {
+    Book* temp = new Book[size - 1];
+    int k = 0;
+    for (int i = 0; i < size; i++)
+    {
+        if (arr[i].id == id) {
+            continue;
+        }
+        temp[k] = arr[i];
+        k++;
+    }
+    delete[] arr;
+    size--;
+    return temp;
 }
 int main()
 {
     char name[50];
-    const int size = 5;
+    int size = 5;
     Book* arr = new Book[5]{
         {1,"Kobzar", "Taras Shevchenko", "Publishing House 1", "Poetry", 1840, 250.50},
         {2,"Tigrolovy", "Ivan Bagriany", "Publishing House 2", "Adventure", 1944, 180.00},
@@ -147,7 +186,15 @@ int main()
         case 7:
             ChangePrice(arr, size);
             break;
-
+        case 8:
+            arr = AddNewBook(arr, size);
+            break;
+        case 9:
+            int Id;
+            cout << "Enter ID to delete: "; cin >> Id;
+            cin.ignore();
+            arr = DeleteBookById(arr, size,Id);
+            break;
         default:
             cout << "Error choice" << endl;
             break;
